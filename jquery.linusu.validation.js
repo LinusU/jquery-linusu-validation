@@ -135,7 +135,7 @@
     
     var validate_element = function ($e) {
         
-        var last = $e.data('valid');
+        var last = ($e.data('valid') !== false);
         var valid = is_valid($e);
         
         if(valid === true && !last) {
