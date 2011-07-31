@@ -13,7 +13,37 @@
  *  jquery.ui.position.js
  *
  */
- 
+
+(function ($, undefined) {
+    
+    $.fn.setCustomValidity = function (message) {
+        return this.each(function () {
+            
+            var invalid = ($(this).data('valid') === false);
+            
+            if(message == "") {
+                if(invalid) { $(this).data('linusu-validate').remove(); }
+            } else {
+                if(invalid) {
+                    $(this).data('linusu-validate').text(message);
+                } else {
+                    $(this).data('linusu-validate',
+                        $('<div class="linusu-validate-error" />').text(message).position({
+                            of: $(this),
+                            my: "left top",
+                            at: "right top"
+                        }).appendTo('body')
+                    );
+                }
+            }
+            
+            $(this).data('valid', (message == ""));
+            
+        });
+    }
+    
+})(jQuery);
+
 (function ($, undefined) {
     
     var messages = {
@@ -52,7 +82,7 @@
         }
         
         if(!required && val == '') {
-            return true;
+            return "";
         }
         
         if($e.attr('type') == 'text') {
@@ -130,34 +160,16 @@
             }
         }
         
-        return true;
+        return "";
     }
     
     var validate_element = function ($e) {
         
-        var last = ($e.data('valid') !== false);
         var valid = is_valid($e);
         
-        if(valid === true && !last) {
-            $e.data('linusu-validate').remove();
-        }
+        $e.setCustomValidity(valid);
         
-        if(valid !== true && last) {
-            
-            var err = $('<div class="linusu-validate-error" />');
-            
-            err.text(valid).position({
-                of: $e,
-                my: "left top",
-                at: "right top"
-            }).appendTo('body');
-            
-            $e.data('linusu-validate', err);
-        }
-        
-        $e.data('valid', (valid === true));
-        
-        return (valid === true);
+        return (valid == "");
     };
     
     $.widget( "linusu.validation", {
