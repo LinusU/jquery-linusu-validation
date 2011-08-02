@@ -64,6 +64,17 @@
         'invalid': "Detta fält är ej korrekt ifyllt"
     };
     
+    var parseDate = function (date) {
+        if(!date) { return NaN; }
+        var parts = date.split("-");
+        if(parts.length != 3) { return NaN; }
+        return new Date(
+            parseInt(parts[0], 10),
+            parseInt(parts[1], 10) - 1,
+            parseInt(parts[2], 10)
+        );
+    };
+    
     var is_valid = function ($e) {
         
         var required = ($e.attr('required') == 'required'),
@@ -119,9 +130,9 @@
         
         if($e.attr('type') == 'date') {
             
-            var n = Date.parse(val),
-                max = Date.parse($e.attr('max')),
-                min = Date.parse($e.attr('min'));
+            var n = parseDate(val),
+                max = parseDate($e.attr('max')),
+                min = parseDate($e.attr('min'));
             
             if(required && isNaN(n)) {
                 return messages['date-invalid'];
