@@ -18,17 +18,17 @@
 }
 
 .linusu-validate-error:before {
-    left: -8px;
-    top: 4px;
-    border-right: 8px solid red;
-    border-top: 6px solid transparent;
-    border-bottom: 6px solid transparent;
+    left: -7px;
+    top: 3px;
+    border-right: 7px solid red;
+    border-top: 7px solid transparent;
+    border-bottom: 7px solid transparent;
 }
 
 .linusu-validate-error:after {
-    left: -7px;
-    top: 5px;
-    border-right: 7px solid white;
-    border-top: 5px solid transparent;
-    border-bottom: 5px solid transparent;
+    left: -6px;
+    top: 4px;
+    border-right: 6px solid white;
+    border-top: 6px solid transparent;
+    border-bottom: 6px solid transparent;
 }

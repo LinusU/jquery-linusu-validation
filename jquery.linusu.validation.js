@@ -9,7 +9,6 @@
  *
  * Depends:
  *  jquery.js
- *  jquery.ui.widget.js
  *  jquery.ui.position.js
  *
  */
@@ -28,11 +27,14 @@
                     $(this).data('linusu-validate').text(message);
                 } else {
                     $(this).data('linusu-validate',
-                        $('<div class="linusu-validate-error" />').text(message).position({
-                            of: $(this),
-                            my: "left top",
-                            at: "right top"
-                        }).appendTo('body')
+                        $('<div class="linusu-validate-error" />')
+                            .appendTo('body')
+                            .text(message)
+                            .position({
+                                of: $(this),
+                                my: "left top",
+                                at: "right top"
+                            })
                     );
                 }
             }
@@ -110,6 +112,10 @@
         
         if($e.attr('type') == 'number') {
             
+            if(required && val == '') {
+                return messages['number-required'];
+            }
+            
             var n = parseFloat(val),
                 max = parseFloat($e.attr('max')),
                 min = parseFloat($e.attr('min'));
@@ -129,6 +135,10 @@
         }
         
         if($e.attr('type') == 'date') {
+            
+            if(required && val == '') {
+                return messages['date-required'];
+            }
             
             var n = parseDate(val),
                 max = parseDate($e.attr('max')),
@@ -183,29 +193,48 @@
         return (valid == "");
     };
     
-    $.widget( "linusu.validation", {
-        version: "beta",
-        _create: function () {
+    var methods = {
+        'init': function () {
             
-            this.element.find('input, select, textarea').bind('keyup', function () {
+            this.find('input, select, textarea').bind('keyup', function () {
                 if(!$(this).data('valid')) { validate_element($(this)); }
             }).bind('change blur', function () {
                 validate_element($(this));
             }).data('valid', true);
             
-            this.element.attr('novalidate', 'novalidate');
+            this.filter('form').attr('novalidate', 'novalidate');
             
+            return this;
         },
         'valid': function () {
             
             var result = true;
             
-            this.element.find('input, select, textarea').each(function () {
-                if(!validate_element($(this))) { result = false; }
+            this.each(function () {
+                if($(this).is('input, select, textarea')) {
+                    if(!validate_element($(this))) { result = false; }
+                } else {
+                    $(this).find('input, select, textarea').each(function () {
+                        if(!validate_element($(this))) { result = false; }
+                    });
+                }
             });
             
             return result;
         }
-    });
+    };
     
+    $.fn.validation = function (method) {
+        
+        if(methods[method]) {
+            return methods[method].apply( this, Array.prototype.slice.call( arguments, 1 ));
+        } else if (typeof method === 'object' || !method) {
+            return methods.init.apply( this, arguments );
+        } else {
+            $.error( 'Method ' +  method + ' does not exist on jQuery.validation' );
+            return false;
+        }
+        
+    };
+
 })(jQuery);
